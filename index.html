@@ -7,6 +7,11 @@
       window.onload = () => {
         const store = window.localStorage;
 
+        const tokenFromRedirect = window.location.hash;
+        if(tokenFromRedirect) {
+            store.setItem("trello-token", tokenFromRedirect.substr(7));
+        }
+
         document.getElementById("token").value = store.getItem("trello-token");
         document.getElementById("api-key-input").value = store.getItem("trello-api-key");
 
@@ -14,6 +19,13 @@
         apiKeyForm.onsubmit = (e) => {
             e.preventDefault();
             store.setItem("trello-api-key", document.getElementById("api-key-input").value);
+        };
+
+        document.getElementById("auth").onclick = () => {
+            const key = store.getItem("trello-api-key");
+            const returnUrl = "https://mqrelly.github.io/trello-client-test/";
+            const url = `https://trello.com/1/authorize?expiration=1hour&name=TestToken&scope=read&response_type=token&key=${key}&return_url=${encodeURIComponent(returnUrl)}`;
+            window.location.href = url;
         };
       };
     </script>
@@ -30,6 +42,10 @@
     <div>
         <label for="token">Token:</label>
         <input id="token" type="text" readonly/>
+    </div>
+
+    <div>
+        <input id="auth" type="button" value="Authenticate"/>
     </div>
   </body>
 </html>

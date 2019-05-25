@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Testing Trello Authentication from a statically hosted site</title>
-        <script>
-            window.onload = () => {
-                console.log("I'm in");
-            };
-        </script>
-    </head>
-    <body>
-        <h1>Testing Trello Authentication from a statically hosted site</h1>
-    </body>
+  <head>
+    <title>Testing Trello Authentication from a statically hosted site</title>
+    <script>
+      window.onload = () => {
+        const store = window.localStorage;
+        let apiKey = "";
+
+        const apiKeyForm = document.getElementById("api-key-form");
+        apiKeyForm.onsubmit = () => {
+            apiKey = apiKeyForm.getElementById("api-key-input").value;
+            console.log(apiKey);
+        };
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Testing Trello Authentication from a statically hosted site</h1>
+    <form id="api-key-form">
+        <lable for="api-key">API key:</lable>
+        <input id="api-key-input" type="text"/>
+        <input type="submit" value="Set API key"/>
+    </form>
+  </body>
 </html>

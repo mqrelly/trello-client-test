@@ -8,9 +8,9 @@
         let apiKey = "";
 
         const apiKeyForm = document.getElementById("api-key-form");
-        apiKeyForm.onsubmit = () => {
-            apiKey = apiKeyForm.getElementById("api-key-input").value;
-            console.log(apiKey);
+        apiKeyForm.onsubmit = (e) => {
+            e.preventDefault();
+            apiKey = document.getElementById("api-key-input").value;
         };
       };
     </script>

@@ -1,51 +1,80 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8" />
     <title>Testing Trello Authentication from a statically hosted site</title>
     <script>
       window.onload = () => {
         const store = window.localStorage;
 
         const tokenFromRedirect = window.location.hash;
-        if(tokenFromRedirect) {
-            store.setItem("trello-token", tokenFromRedirect.substr(7));
+        if (tokenFromRedirect) {
+          store.setItem("trello-token", tokenFromRedirect.substr(7));
         }
 
         document.getElementById("token").value = store.getItem("trello-token");
-        document.getElementById("api-key-input").value = store.getItem("trello-api-key");
+        document.getElementById("api-key-input").value = store.getItem(
+          "trello-api-key"
+        );
 
         const apiKeyForm = document.getElementById("api-key-form");
-        apiKeyForm.onsubmit = (e) => {
-            e.preventDefault();
-            store.setItem("trello-api-key", document.getElementById("api-key-input").value);
+        apiKeyForm.onsubmit = e => {
+          e.preventDefault();
+          store.setItem(
+            "trello-api-key",
+            document.getElementById("api-key-input").value
+          );
         };
 
         document.getElementById("auth").onclick = () => {
-            const key = store.getItem("trello-api-key");
-            const returnUrl = "https://mqrelly.github.io/trello-client-test/";
-            const url = `https://trello.com/1/authorize?expiration=1hour&name=TestToken&scope=read&response_type=token&key=${key}&return_url=${encodeURIComponent(returnUrl)}`;
-            window.location.href = url;
+          const key = store.getItem("trello-api-key");
+          const returnUrl = "https://mqrelly.github.io/trello-client-test/";
+          const url = `https://trello.com/1/authorize?expiration=1hour&name=TestToken&scope=read&response_type=token&key=${key}&return_url=${encodeURIComponent(
+            returnUrl
+          )}`;
+          window.location.href = url;
+        };
+
+        document.getElementById("fetch-member-info").onclick = () => {
+          const key = store.getItem("trello-api-key");
+          const token = store.getItem("trello-token");
+          let xhr = new XMLHttpRequest();
+          xhr.addEventListener("readystatechange", function() {
+            if (this.readyState === this.DONE) {
+              document.getElementById("member-info").value = this.responseText;
+            }
+          });
+          xhr.open(
+            "GET",
+            `https://api.trello.com/1/members/me?key=${key}&token=${token}boardBackgrounds=none&boardsInvited_fields=name%2Cclosed%2CidOrganization%2Cpinned&boardStars=false&cards=none&customBoardBackgrounds=none&customEmoji=none&customStickers=none&fields=all&organizations=none&organization_fields=all&organization_paid_account=false&organizationsInvited=none&organizationsInvited_fields=all&paid_account=false&savedSearches=false&tokens=none`
+          );
+          xhr.send(null);
         };
       };
     </script>
   </head>
   <body>
     <h1>Testing Trello Authentication from a statically hosted site</h1>
-    
+
     <form id="api-key-form">
-        <lable for="api-key-input">API key:</lable>
-        <input id="api-key-input" type="text"/>
-        <input type="submit" value="Set API key"/>
+      <lable for="api-key-input">API key:</lable>
+      <input id="api-key-input" type="text" />
+      <input type="submit" value="Set API key" />
     </form>
-    
+
     <div>
-        <label for="token">Token:</label>
-        <input id="token" type="text" readonly/>
+      <label for="token">Token:</label>
+      <input id="token" type="text" readonly />
     </div>
 
     <div>
-        <input id="auth" type="button" value="Authenticate"/>
+      <input id="auth" type="button" value="Authenticate" />
+    </div>
+
+    <div>
+      <textarea id="member-info"></textarea>
+      <br />
+      <input id="fetch-member-info" type="button" value="Fetch user info" />
     </div>
   </body>
 </html>
